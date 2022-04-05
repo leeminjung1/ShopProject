@@ -1,14 +1,11 @@
 package jpabook.jpashop.service;
 
-import jpabook.jpashop.domain.Address;
-import jpabook.jpashop.domain.Member;
-import jpabook.jpashop.domain.Order;
-import jpabook.jpashop.domain.OrderStatus;
+import jpabook.jpashop.domain.*;
 import jpabook.jpashop.domain.item.Book;
 import jpabook.jpashop.domain.item.Item;
+import jpabook.jpashop.exception.NotEnoughStockException;
 import jpabook.jpashop.repository.OrderRepository;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,7 +32,7 @@ public class OrderServiceTest {
     public void 상품주문() throws Exception {
         // given
         Member member = createMember();
-        Item item = createBook("book1", 9900, 100);
+        Item item = createBook("book1", 10000, 100);
         int count = 2;
 
         // when
@@ -44,10 +41,41 @@ public class OrderServiceTest {
         // then
         Order getOrder = orderRepository.findOne(orderId);
 
-        assertEquals(OrderStatus.ORDER, getOrder.getStatus());
-        assertEquals(1, getOrder.getOrderItems().size());
-        assertEquals(9900 * 2, getOrder.getTotalPrice());
-        assertEquals(100 - 2, item.getStockQuantity());
+        assertEquals(OrderStatus.ORDER, getOrder.getStatus(), "상품 주문시 상태는 ORDER");
+        assertEquals(1, getOrder.getOrderItems().size(), "주문한 상품 종류 수가 정확해야한다.");
+        assertEquals(10000 * count, getOrder.getTotalPrice(), "주문가격은 가격*수량이다.");
+        assertEquals(100 - count, item.getStockQuantity(), "주문 수량만큼 재고가 줄어야한다.");
+    }
+    
+    @Test
+    public void 주문취소() throws Exception {
+        // given
+        Member member = createMember();
+        Book book = createBook("book", 10000, 100);
+        int count = 2;
+
+        Long orderId = orderService.order(member.getId(), book.getId(), count);
+
+        // when
+        orderService.cancelOrder(orderId);
+        
+        // then
+        assertEquals(OrderStatus.CANCEL, orderRepository.findOne(orderId).getStatus(), "주문 상태가 CANCEL");
+        assertEquals(100, book.getStockQuantity(), "주문하기 전과 재고가 같아야한다.");
+    }
+    
+    @Test(expected = NotEnoughStockException.class)
+    public void 상품주문_재고수량초과() throws Exception {
+        // given
+        Member member = createMember();
+        int count = 100;
+        Book book = createBook("book", 10000, count);
+
+        // when
+        orderService.order(member.getId(), book.getId(), count + 1);
+
+        // then
+        fail("재고 수량 부족 예외가 발생해야 한다.");
     }
 
     private Member createMember() {
@@ -66,5 +94,4 @@ public class OrderServiceTest {
         em.persist(book);
         return book;
     }
-
 }
