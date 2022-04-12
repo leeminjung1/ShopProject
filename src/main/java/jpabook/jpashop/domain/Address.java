@@ -8,16 +8,18 @@ import javax.persistence.Embeddable;
 @Getter
 public class Address {
 
-    private String city;
     private String street;
+    private String city;
+    private String state;
     private String zipcode;
 
     protected Address() {
     }
 
-    public Address(String city, String street, String zipcode) {
-        this.city = city;
+    public Address(String street, String city, String state, String zipcode) {
         this.street = street;
+        this.city = city;
+        this.state = state;
         this.zipcode = zipcode;
     }
 }

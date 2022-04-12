@@ -1,8 +1,9 @@
-package jpabook.jpashop.web;
+package jpabook.jpashop.web.controller;
 
 import jpabook.jpashop.domain.Address;
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.service.MemberService;
+import jpabook.jpashop.web.form.MemberForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,7 +34,7 @@ public class MemberController {
         }
 
         try {
-            Address address = new Address(form.getCity(), form.getStreet(), form.getZipcode());
+            Address address = new Address(form.getStreet(), form.getCity(), form.getState(), form.getZipcode());
 
             Member member = new Member();
             member.setName(form.getName());

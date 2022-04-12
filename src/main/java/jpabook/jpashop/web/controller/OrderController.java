@@ -1,9 +1,10 @@
-package jpabook.jpashop.web;
+package jpabook.jpashop.web.controller;
 
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.domain.Order;
 import jpabook.jpashop.domain.OrderSearch;
 import jpabook.jpashop.domain.item.Item;
+import jpabook.jpashop.exception.NotEnoughStockException;
 import jpabook.jpashop.service.ItemService;
 import jpabook.jpashop.service.MemberService;
 import jpabook.jpashop.service.OrderService;
@@ -37,8 +38,12 @@ public class OrderController {
     public String order(@RequestParam("memberId") Long memberId,
                         @RequestParam("itemId") Long itemId,
                         @RequestParam("count") int count) {
-        orderService.order(memberId, itemId, count);
-        return "redirect:/orders";
+        try {
+            orderService.order(memberId, itemId, count);
+            return "redirect:/orders";
+        } catch (Exception e) {
+            return "redirect:/order";
+        }
     }
 
     @GetMapping(value = "/orders")

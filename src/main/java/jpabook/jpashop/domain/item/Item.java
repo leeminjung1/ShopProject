@@ -27,6 +27,12 @@ public abstract class Item {
     @ManyToMany(mappedBy = "items")
     private List<Category> categories = new ArrayList<>();
 
+    @Transient
+    public String getDiscriminatorValue(){
+        DiscriminatorValue val = this.getClass().getAnnotation(DiscriminatorValue.class);
+        return val == null ? null : val.value();
+    }
+
     //==비즈니스 로직==//
     public void addStock(int quantity) {
         this.stockQuantity += quantity;
@@ -34,6 +40,7 @@ public abstract class Item {
 
     public void removeStock(int quantity) {
         int resQuantity = this.stockQuantity - quantity;
+
         if (resQuantity < 0) {
             throw new NotEnoughStockException("need more stock");
         }

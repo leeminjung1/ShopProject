@@ -42,6 +42,10 @@ public class OrderItem {
         OrderItem orderItem = new OrderItem();
         orderItem.setItem(item);
         orderItem.setOrderPrice(orderPrice);
+
+        if (count <= 0) {
+            throw new IllegalArgumentException("주문 수량은 1개 이상이어야 합니다.");
+        }
         orderItem.setCount(count);
 
         // 재고 수량 감소
