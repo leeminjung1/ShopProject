@@ -5,6 +5,7 @@ import jpabook.jpashop.domain.item.Book;
 import jpabook.jpashop.domain.item.Item;
 import jpabook.jpashop.domain.item.Movie;
 import jpabook.jpashop.service.ItemService;
+import jpabook.jpashop.service.UpdateItemDto;
 import jpabook.jpashop.web.form.AlbumForm;
 import jpabook.jpashop.web.form.BookForm;
 import jpabook.jpashop.web.form.ItemForm;
@@ -110,24 +111,13 @@ public class ItemController {
         return "items/updateItemForm";
     }
 
-//    @PostMapping("/items/{itemId}/edit")
-/*    public String updateItem(BookForm form) {
-        Book book = new Book();
-        book.setName(form.getName());
-        book.setPrice(form.getPrice());
-        book.setStockQuantity(form.getStockQuantity());
-        book.setAuthor(form.getAuthor());
-        book.setIsbn(form.getIsbn());
-        itemService.saveItem(book);
-        return "redirect:/items";
-    }*/
-
     /**
-     * 상품 수정, 권장 코드
+     * 상품 수정
      */
     @PostMapping(value = "/items/{itemId}/edit")
     public String updateItem(@ModelAttribute("form") BookForm form) {
-        itemService.updateItem(form.getId(), form.getName(), form.getPrice(), form.getStockQuantity());
+        UpdateItemDto dto = new UpdateItemDto(form.getName(), form.getPrice(), form.getStockQuantity());
+        itemService.updateItem(form.getId(), dto);
         return "redirect:/items";
     }
 }
