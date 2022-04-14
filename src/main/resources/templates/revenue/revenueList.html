@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"/>
+<body>
+<div class="container">
+    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+    <div>
+        <div>
+            <form th:object="${revenueSearch}" class="form-inline">
+                <div class="form-group mb-2">
+                    <input type="text" th:field="*{itemName}" class="form-control" placeholder="상품명"/>
+                </div>
+                <div class="form-group mx-sm-1 mb-2">
+                    <input type="date" th:field="*{orderDate}"/>
+                </div>
+                <button type="submit" class="btn btn-primary mb-2">검색</button>
+            </form>
+        </div>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>#itemId</th>
+                <th>상품명</th>
+                <th>상품 가격</th>
+                <th>주문 수량</th>
+                <th>매출 합계</th>
+                <th>주문 일시</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="sale : ${sales}">
+                <td th:text="${sale.itemId}"></td>
+                <td th:text="${sale.itemName}"></td>
+                <td th:text="${sale.price}"></td>
+                <td th:text="${sale.count}"></td>
+                <td th:text="${sale.total}"></td>
+                <td th:text="${sale.dateTime}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div th:replace="fragments/footer :: footer"/>
+</div> <!-- /container -->
+</body>
+</html>

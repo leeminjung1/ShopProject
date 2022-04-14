@@ -49,7 +49,7 @@ public abstract class Item {
         int resQuantity = this.stockQuantity - quantity;
 
         if (resQuantity < 0) {
-            throw new NotEnoughStockException("need more stock");
+            throw new NotEnoughStockException("재고가 부족합니다.");
         }
         this.stockQuantity = resQuantity;
     }
