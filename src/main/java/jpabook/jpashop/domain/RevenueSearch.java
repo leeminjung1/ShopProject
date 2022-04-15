@@ -8,5 +8,6 @@ import java.time.LocalDateTime;
 @Getter @Setter
 public class RevenueSearch {
     private String itemName;
-    private LocalDateTime orderDate;
+    private String orderDateFrom;
+    private String orderDateTo;
 }

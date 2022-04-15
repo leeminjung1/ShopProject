@@ -1,6 +1,12 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header"/>
+<style>
+.form-control-datetime {
+    display: inline;
+    width: 45%;
+}
+</style>
 <body>
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
@@ -8,10 +14,14 @@
         <div>
             <form th:object="${revenueSearch}" class="form-inline">
                 <div class="form-group mb-2">
+                    <p class="lead form-label">상품명 조회</p>
                     <input type="text" th:field="*{itemName}" class="form-control" placeholder="상품명"/>
                 </div>
-                <div class="form-group mx-sm-1 mb-2">
-                    <input type="date" th:field="*{orderDate}"/>
+                <div class="form-group mb-2">
+                    <p class="lead form-label">조회 기간</p>
+                    <input type="datetime-local" th:field="*{orderDateFrom}" class="form-control form-control-datetime"/>
+                    <p class="d-inline">-</p>
+                    <input type="datetime-local" th:field="*{orderDateTo}" class="form-control form-control-datetime"/>
                 </div>
                 <button type="submit" class="btn btn-primary mb-2">검색</button>
             </form>

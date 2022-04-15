@@ -13,4 +13,13 @@ public class RevenueDto {
     private int count;
     private int total;
     private LocalDateTime dateTime;
+
+    public RevenueDto(Long itemId, String itemName, int price, int count, int total, LocalDateTime dateTime) {
+        this.itemId = itemId;
+        this.itemName = itemName;
+        this.price = price;
+        this.count = count;
+        this.total = total;
+        this.dateTime = dateTime;
+    }
 }
