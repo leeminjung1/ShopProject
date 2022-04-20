@@ -28,29 +28,32 @@
             <tr>
                 <th>#</th>
                 <th>회원명</th>
-                <th>대표상품 이름</th>
-                <th>대표상품 주문가격</th>
-                <th>대표상품 주문수량</th>
+                <th>주문상품명</th>
+                <th>주문상품가격</th>
+                <th>주문수량</th>
                 <th>상태</th>
                 <th>일시</th>
                 <th></th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="order : ${orders}">
-                <td th:text="${order.id}"></td>
-                <td th:text="${order.member.name}"></td>
-                <td th:text="${order.orderItems[0].item.name}"></td>
-                <td th:text="${order.orderItems[0].orderPrice}"></td>
-                <td th:text="${order.orderItems[0].count}"></td>
-                <td th:text="${order.status}"></td>
-                <td th:text="${order.orderDate}"></td>
-                <td>
-                    <a th:if="${order.status.name() == 'ORDER'}" href="#"
-                       th:href="'javascript:cancel('+${order.id}+')'"
-                       class="btn btn-danger">CANCEL</a>
+            <span th:each="order : ${orders}">
+                <tr th:each="orderItem : ${order.orderItems}">
+                    <td th:text="${orderItem.item.id}"></td>
+                    <td th:text="${order.member.name}"></td>
+                    <td th:text="${orderItem.item.name}"></td>
+                    <td th:text="${orderItem.orderPrice}"></td>
+                    <td th:text="${orderItem.count}"></td>
+                    <td th:text="${order.status}"></td>
+                    <td th:text="${order.orderDate}"></td>
+                    <td>
+                        <a th:if="${order.status.name() == 'ORDER'}" href="#"
+                           th:href="'javascript:cancel('+${orderItem.order.id}+')'"
+                           class="btn btn-danger">CANCEL</a>
                 </td>
-            </tr>
+                </tr>
+
+            </span>
             </tbody>
         </table>
     </div>

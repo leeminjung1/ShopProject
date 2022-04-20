@@ -81,7 +81,7 @@ public class RevenueRepository {
             if (order.getStatus() == CANCEL) {
                 continue;
             }
-            list.add(new RevenueDto(item.getId(), item.getName(), orderItem.getOrderPrice(), orderItem.getCount(), order.getTotalPrice(), order.getOrderDate()));
+            list.add(new RevenueDto(item.getId(), item.getName(), orderItem.getOrderPrice(), orderItem.getCount(), orderItem.getOrderPrice() * orderItem.getCount(), order.getOrderDate()));
         }
 
         return list;
