@@ -108,6 +108,10 @@ public class OrderRepository {
                 .getResultList();
     }
 
+//    public List<Order> findAll(OrderSearch orderSearch) {
+//
+//    }
+
     public List<Order> findAllWithMemberDelivery(int offset, int limit) {
         return em.createQuery(
                         "select o from Order o" +
