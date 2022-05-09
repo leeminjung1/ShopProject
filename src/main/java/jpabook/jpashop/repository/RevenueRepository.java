@@ -1,9 +1,12 @@
 package jpabook.jpashop.repository;
 
-import jpabook.jpashop.domain.Order;
-import jpabook.jpashop.domain.OrderItem;
-import jpabook.jpashop.domain.RevenueSearch;
+import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import jpabook.jpashop.domain.*;
 import jpabook.jpashop.domain.item.Item;
+import jpabook.jpashop.domain.item.QItem;
 import jpabook.jpashop.service.RevenueDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -26,7 +29,7 @@ public class RevenueRepository {
     /**
      * 매출 검색
      */
-    public List<RevenueDto> findRevenue(RevenueSearch revenueSearch) {
+    public List<RevenueDto> findRevenueOld(RevenueSearch revenueSearch) {
         // JPQL
         String jpql = "select oi from OrderItem oi" +
                 " left join fetch oi.item i" +
@@ -72,8 +75,47 @@ public class RevenueRepository {
             query = query.setParameter("orderDateTo", LocalDateTime.parse(revenueSearch.getOrderDateTo()).plusMinutes(1));
         }
 
-        List<OrderItem> orderItems = query.getResultList();
+        return orderItemToRevenueDto(query.getResultList());
+    }
 
+    public List<RevenueDto> findRevenue(RevenueSearch revenueSearch) {
+        JPAQueryFactory query = new JPAQueryFactory(em);
+        QOrderItem oi = QOrderItem.orderItem;
+        QOrder o = QOrder.order;
+        QItem i = QItem.item;
+        return orderItemToRevenueDto(query
+                .select(oi)
+                .from(oi)
+                .join(oi.order, o)
+                .join(oi.item, i)
+                .where(itemNameLike(revenueSearch.getItemName()))
+                .where(dateAfter(revenueSearch.getOrderDateFrom()))
+                .where(dateBefore(revenueSearch.getOrderDateTo()))
+                .fetch());
+    }
+
+    private BooleanExpression dateAfter(String orderDateFrom) {
+        if (StringUtils.hasText(orderDateFrom)) {
+            return QOrder.order.orderDate.after(LocalDateTime.parse(orderDateFrom));
+        }
+        return null;
+    }
+
+    private BooleanExpression dateBefore(String orderDateTo) {
+        if (StringUtils.hasText(orderDateTo)) {
+            return QOrder.order.orderDate.before(LocalDateTime.parse(orderDateTo));
+        }
+        return null;
+    }
+
+    private BooleanExpression itemNameLike(String itemName) {
+        if (StringUtils.hasText(itemName)) {
+            return QItem.item.name.contains(itemName);
+        }
+        return null;
+    }
+
+    private List<RevenueDto> orderItemToRevenueDto(List<OrderItem> orderItems) {
         List<RevenueDto> list = new ArrayList<>();
         for (OrderItem orderItem : orderItems) {
             Item item = orderItem.getItem();
@@ -83,7 +125,6 @@ public class RevenueRepository {
             }
             list.add(new RevenueDto(item.getId(), item.getName(), orderItem.getOrderPrice(), orderItem.getCount(), orderItem.getOrderPrice() * orderItem.getCount(), order.getOrderDate()));
         }
-
         return list;
     }
 }

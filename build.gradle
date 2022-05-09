@@ -59,7 +59,6 @@ tasks.named('test') {
 }
 
 //querydsl 추가
-//def querydslDir = 'src/main/generated'
 def querydslDir = "$buildDir/generated/querydsl"
 
 querydsl {
